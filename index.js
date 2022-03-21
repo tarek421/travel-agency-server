@@ -12,7 +12,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const port = 5000
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
