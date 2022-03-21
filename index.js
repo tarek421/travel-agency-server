@@ -39,6 +39,11 @@ const verifyToken = async (req, res, next) => {
 
 
 
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+
 async function run() {
   try {
     await client.connect();
@@ -134,9 +139,6 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
 
 
