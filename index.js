@@ -1,9 +1,16 @@
-const express = require('express')
+const express = require('express');
 const app = express();
 require('dotenv').config();
+var admin = require("firebase-admin");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+
+var serviceAccount = require("./travel-agency-firebase-adminsdk.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const port = 5000
 
@@ -17,14 +24,28 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
+const verifyToken = async (req, res, next) => {
+  if (req.headers?.authorization?.startsWith("Bearer ")) {
+    const token = req.headers.authorization.split(" ")[1];
+
+    try {
+      const decodedUser = await admin.auth().verifyIdToken(token);
+            req.decodedEmail = decodedUser.email;
+    } catch {}
+  }
+
+  next();
+};
+
 
 
 async function run() {
   try {
     await client.connect();
     const destinationCollection = client.db("travelAgency").collection("destinations");
-    const orderCollection = client.db("travelAgency").collection("orders")
-    
+    const orderCollection = client.db("travelAgency").collection("orders");
+    const userCollection = client.db("travelAgency").collection("users");
+
     app.post("/destinations", async (req, res) => {
       const destination = req.body;
       const result = await destinationCollection.insertOne(destination);
@@ -39,10 +60,9 @@ async function run() {
 
     app.get("/destination", async (req, res) => {
       const title = req.query.title;
-      const query = {title: title};
+      const query = { title: title };
       const result = await destinationCollection.find(query).toArray();
       res.json(result);
-      console.log(result);
     })
 
     app.post('/orders', async (req, res) => {
@@ -56,11 +76,57 @@ async function run() {
       res.json(result);
     })
 
-    app.get('/order:email', async (req, res) => {
-      const query = req.query.email;
+    app.get('/order', verifyToken, async (req, res) => {
+      const email = req.query.email;
+      console.log(email)
+      const query = { email: email };
       const result = await orderCollection.find(query).toArray();
       res.json(result);
     })
+
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
+      res.json(result);
+    });
+
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      let isAdmin = false;
+      if (user?.role === "admin") {
+        isAdmin = true;
+      }
+      res.json({ admin: isAdmin });
+    });
+
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const update = { $set: user };
+      const result = await userCollection.updateOne(filter, update, options);
+      res.json(result);
+    });
+
+    app.put("/users/admin", verifyToken, async (req, res) => {
+      const token = req.headers.authorization;
+      const user = req.body;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const requesterAccount = await userCollection.findOne({
+          email: requester,
+        });
+        if (requesterAccount.role === 'admin') {
+          const user = req.body;
+          const filter = { email: user.email };
+          const update = { $set: { role: "admin" } };
+          const result = await userCollection.updateOne(filter, update);
+          res.json(result);
+        }
+      }
+    });
 
   } finally { }
 }
