@@ -60,9 +60,13 @@ async function run() {
       res.json(result);
     })
 
-    app.get("/destinations", async (req, res) => {
-      const result = await destinationCollection.find({}).toArray();
-      res.json(result);
+    app.get("/destinations", verifyToken, async (req, res) => {
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const result = await destinationCollection.find({}).toArray();
+        res.json(result);
+      }
     })
 
 
@@ -162,9 +166,13 @@ async function run() {
       res.json(result);
     })
 
-    app.get("/rivews", async (req, res) => {
-      const result = await rivewsCollection.find({}).toArray();
-      res.json(result);
+    app.get("/rivews", verifyToken, async (req, res) => {
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const result = await rivewsCollection.find({}).toArray();
+        res.json(result);
+      }
     })
 
   } finally { }
