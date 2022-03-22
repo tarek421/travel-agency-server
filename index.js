@@ -50,6 +50,9 @@ async function run() {
     const destinationCollection = client.db("travelAgency").collection("destinations");
     const orderCollection = client.db("travelAgency").collection("orders");
     const userCollection = client.db("travelAgency").collection("users");
+    const rivewsCollection = client.db("travelAgency").collection("rivews");
+
+    // Destination Collection post and get operations
 
     app.post("/destinations", async (req, res) => {
       const destination = req.body;
@@ -70,6 +73,8 @@ async function run() {
       res.json(result);
     })
 
+    // place Order collection pose and get
+
     app.post('/orders', async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
@@ -89,12 +94,17 @@ async function run() {
       res.json(result);
     })
 
+    // User collection post, get and Make Admin
+
     app.post("/users", async (req, res) => {
       const user = req.body;
       const result = await userCollection.insertOne(user);
       res.json(result);
     });
 
+
+
+    //Make Admin API
     app.get("/user/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
@@ -106,6 +116,7 @@ async function run() {
       res.json({ admin: isAdmin });
     });
 
+    // update Admin api
     app.put("/users", async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
@@ -115,6 +126,7 @@ async function run() {
       res.json(result);
     });
 
+    //verify Admin API
     app.put("/users/admin", verifyToken, async (req, res) => {
       const token = req.headers.authorization;
       const user = req.body;
@@ -132,6 +144,19 @@ async function run() {
         }
       }
     });
+
+    // Rivew Collection post and get
+
+    app.post("/rivews", async (req, res) => {
+      const rivew = req.body;
+      const result = await rivewsCollection.insertOne(rivew);
+      res.json(result);
+    })
+
+    app.get("/rivews", async (req, res) => {
+      const result = await rivewsCollection.find({}).toArray();
+      res.json(result);
+    })
 
   } finally { }
 }
