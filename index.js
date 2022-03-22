@@ -30,8 +30,8 @@ const verifyToken = async (req, res, next) => {
 
     try {
       const decodedUser = await admin.auth().verifyIdToken(token);
-            req.decodedEmail = decodedUser.email;
-    } catch {}
+      req.decodedEmail = decodedUser.email;
+    } catch { }
   }
 
   next();
@@ -81,17 +81,26 @@ async function run() {
       res.json(result);
     })
 
-    app.get('/orders', async (req, res) => {
-      const result = await orderCollection.find({}).toArray();
-      res.json(result);
+    app.get('/orders', verifyToken, async (req, res) => {
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const result = await orderCollection.find({}).toArray();
+        res.json(result);
+      }
+
     })
 
     app.get('/order', verifyToken, async (req, res) => {
-      const email = req.query.email;
-      console.log(email)
-      const query = { email: email };
-      const result = await orderCollection.find(query).toArray();
-      res.json(result);
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const email = req.query.email;
+        const query = { email: email };
+        const result = await orderCollection.find(query).toArray();
+        res.json(result);
+      }
+
     })
 
     // User collection post, get and Make Admin
