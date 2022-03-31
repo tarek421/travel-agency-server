@@ -5,6 +5,7 @@ var admin = require("firebase-admin");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const ObjectId = require("mongodb").ObjectId;
 
 var serviceAccount = require("./travel-agency-firebase-adminsdk.json");
 
@@ -12,7 +13,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5050;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -89,6 +90,39 @@ async function run() {
         res.json(result);
       }
 
+    })
+
+    //Order status serviceAccount
+  
+    app.put('/orders/status', async (req, res) =>{
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+
+      const orderStatus = req.body;
+      const { id, value } = orderStatus;
+
+      const filter = {_id : ObjectId(id)};
+          const update = { $set: { status: value}};
+          const result = await orderCollection.updateOne(filter, update);
+          res.json(result);
+          console.log(result);
+
+
+      if(requester){
+        const requesterAccount = await userCollection.findOne({
+          email: requester,
+        });
+
+        if (requesterAccount.role === 'admin') {
+          const orderStatus = req.body;
+          const { id, value } = orderStatus;
+    
+          const filter = {_id : ObjectId(id)};
+              const update = { $set: { status: value}};
+              const result = await orderCollection.updateOne(filter, update);
+              res.json(result);
+        }
+      }
     })
 
     app.get('/order', verifyToken, async (req, res) => {
