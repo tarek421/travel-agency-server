@@ -159,6 +159,14 @@ async function run() {
       res.json({ admin: isAdmin });
     });
 
+
+    //All Admin List
+    app.get("/admins", async (req, res) => {
+      const admin = await userCollection.find({role: 'admin'}).toArray();
+      res.json(admin)
+    })
+
+
     // update Admin api
     app.put("/users", async (req, res) => {
       const user = req.body;
