@@ -137,6 +137,24 @@ async function run() {
 
     })
 
+
+    app.put("/removeAdmin", verifyToken, async (req, res) => {
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+      if (requester) {
+        const requesterAccount = await userCollection.findOne({
+          email: requester,
+        });
+        if (requesterAccount.role === 'admin') {
+          const user = req.body;
+          const filter = { email: user.email };
+          const update = { $set: { role: "" } };
+          const result = await userCollection.updateOne(filter, update);
+          res.json(result);
+        }
+      }
+    });
+
     // User collection post, get and Make Admin
 
     app.post("/users", async (req, res) => {
