@@ -13,7 +13,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const port = process.env.PORT || 5050;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -105,7 +105,6 @@ async function run() {
           const update = { $set: { status: value}};
           const result = await orderCollection.updateOne(filter, update);
           res.json(result);
-          console.log(result);
 
 
       if(requester){
@@ -113,7 +112,7 @@ async function run() {
           email: requester,
         });
 
-        if (requesterAccount.role === 'admin') {
+        if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
           const orderStatus = req.body;
           const { id, value } = orderStatus;
     
@@ -138,17 +137,19 @@ async function run() {
     })
 
 
-    app.put("/removeAdmin", verifyToken, async (req, res) => {
+    app.put("/admin/remove", verifyToken, async (req, res) => {
+
       const token = req.headers.authorization;
+      const user = req.body;
       const requester = req.decodedEmail;
       if (requester) {
         const requesterAccount = await userCollection.findOne({
           email: requester,
         });
-        if (requesterAccount.role === 'admin') {
+        if (requesterAccount.role === 'administer') {
           const user = req.body;
           const filter = { email: user.email };
-          const update = { $set: { role: "" } };
+          const update = { $set: { role: " " } };
           const result = await userCollection.updateOne(filter, update);
           res.json(result);
         }
@@ -163,6 +164,12 @@ async function run() {
       res.json(result);
     });
 
+    app.get('/users', async (req, res) => {
+      const filter = req.query.email;
+      const result = await userCollection.find({email:filter}).toArray();
+      res.json(result);
+    })
+
 
 
     //Make Admin API
@@ -171,7 +178,7 @@ async function run() {
       const query = { email: email };
       const user = await userCollection.findOne(query);
       let isAdmin = false;
-      if (user?.role === "admin") {
+      if (user?.role === "admin" || user?.role === "administer") {
         isAdmin = true;
       }
       res.json({ admin: isAdmin });
@@ -180,7 +187,8 @@ async function run() {
 
     //All Admin List
     app.get("/admins", async (req, res) => {
-      const admin = await userCollection.find({role: 'admin'}).toArray();
+      const admin = await userCollection.find({role: 'admin'})
+      .toArray();
       res.json(admin)
     })
 
@@ -204,7 +212,7 @@ async function run() {
         const requesterAccount = await userCollection.findOne({
           email: requester,
         });
-        if (requesterAccount.role === 'admin') {
+        if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
           const user = req.body;
           const filter = { email: user.email };
           const update = { $set: { role: "admin" } };
