@@ -74,6 +74,30 @@ async function run() {
       res.json(result);
     })
 
+
+    app.delete("/item/delete", verifyToken, async (req, res)=>{
+
+      const token = req.headers.authorization;
+      const requester = req.decodedEmail;
+
+
+
+      if(requester){
+        const requesterAccount = await userCollection.findOne({
+          email: requester,
+        });
+
+        if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
+          const id = req.query.id;
+
+          const filter = {_id : ObjectId(id)};
+              const result = await destinationCollection.deleteOne(filter);
+              res.json(result);
+              console.log(result);
+        }
+      }
+    })
+
     // place Order collection pose and get
 
     app.post('/orders', async (req, res) => {
