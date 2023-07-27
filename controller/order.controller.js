@@ -1,20 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const Order = require("../model/order.model");
-var admin = require("firebase-admin");
 
-const verifyToken = async (req, res, next) => {
-    console.log(req.headers?.authorization)
-    if (req.headers?.authorization?.startsWith("Bearer ")) {
-        const token = req.headers.authorization.split(" ")[1];
-        console.log(token);
-        try {
-            const decodedUser = await admin.auth().verifyIdToken(token);
-            req.decodedEmail = decodedUser.email;
-            console.log(decodedUser.email);
-        } catch { }
-    }
-    next();
-};
 
 
 exports.creatOrder = async (req, res) => {
@@ -59,7 +45,7 @@ exports.getOrderByEmail = async (req, res) => {
     }
 }
 
-exports.orderStatus = verifyToken, async (req, res) => {
+exports.orderStatus = async (req, res) => {
     try {
         const token = req.headers.authorization;
         const requesterEmail = req.decodedEmail;
