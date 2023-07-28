@@ -10,9 +10,10 @@ const verifyToken = async (req, res, next) => {
         try {
             const decodedUser = await admin.auth().verifyIdToken(token);
             req.decodedEmail = decodedUser.email;
+            next();
         } catch { }
     }
-    next();
+
 };
 
 router.get("/", getAllDestination);

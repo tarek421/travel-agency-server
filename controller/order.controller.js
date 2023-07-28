@@ -47,9 +47,7 @@ exports.getOrderByEmail = async (req, res) => {
 
 exports.orderStatus = async (req, res) => {
     try {
-        const token = req.headers.authorization;
         const requesterEmail = req.decodedEmail;
-
         if (requester) {
             const requesterAccount = await Order.findOne({
                 email: requesterEmail,
