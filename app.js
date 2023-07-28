@@ -17,7 +17,24 @@ const rivewRouter = require('./router/rivew.router');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000", "https://travel-agency-client-six.vercel.app/", "https://travel-agency-1.netlify.app/"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
+    credentials: true
+}));
+
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 
 
