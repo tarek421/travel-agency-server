@@ -5,16 +5,6 @@ const app = express();
 var admin = require("firebase-admin");
 
 
-
-
-const userRouter = require('./router/user.route');
-const destinationRouter = require('./router/destination.route');
-const orderRouter = require('./router/order.route');
-const rivewRouter = require('./router/rivew.router');
-
-
-
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({
@@ -35,6 +25,11 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+const userRouter = require('./router/user.route');
+const destinationRouter = require('./router/destination.route');
+const orderRouter = require('./router/order.route');
+const rivewRouter = require('./router/rivew.router');
 
 
 
