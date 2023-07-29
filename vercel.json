@@ -1,0 +1,17 @@
+{
+  "verson": 2,
+  "framwork": "node",
+  "name": "travel-agency",
+  "build": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "route": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.js"
+    }
+  ]
+}
