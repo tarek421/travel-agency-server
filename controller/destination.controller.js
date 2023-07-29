@@ -47,7 +47,6 @@ exports.deleteDestination = async (req, res) => {
     try {
         const token = req.headers.authorization;
         const requester = req.decodedEmail;
-        console.log(requester);
         if (requester) {
             const requesterAccount = await User.findOne({
                 email: requester,

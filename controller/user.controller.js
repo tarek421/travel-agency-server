@@ -81,9 +81,11 @@ exports.DeleteUser = async (req, res) => {
             const requesterAccount = await User.findOne({
                 email: requester,
             });
-            if (requesterAccount.role === 'admin') {
+            if (requesterAccount.role === 'administer') {
                 await User.deleteOne({ id: req.params.id });
                 res.status(200).json({ message: 'successfully deleted user' });
+            } else {
+                res.status(500).json({ message: "only administer can delete admin" })
             }
         }
     } catch (error) {
