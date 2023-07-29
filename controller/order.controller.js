@@ -47,20 +47,26 @@ exports.getOrderByEmail = async (req, res) => {
 
 exports.orderStatus = async (req, res) => {
     try {
-        const requesterEmail = req.decodedEmail;
-        if (requester) {
-            const requesterAccount = await Order.findOne({
-                email: requesterEmail,
-            });
+        // const requesterEmail = req.decodedEmail;
+        // if (requester) {
+        //     const requesterAccount = await Order.findOne({
+        //         email: requesterEmail,
+        //     });
 
-            if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
-                const { id, value } = req.body;
-                const filter = { _id: ObjectId(id) };
-                const update = { $set: { status: value } };
-                const result = await Order.updateOne(filter, update);
-                res.json(result);
-            }
-        }
+        //     if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
+        //         const { id, value } = req.body;
+        //         const filter = { _id: ObjectId(id) };
+        //         const update = { $set: { status: value } };
+        //         const result = await Order.updateOne(filter, update);
+        //         res.json(result);
+        //     }
+        // }
+
+        const { id, value } = req.body;
+        const filter = { _id: ObjectId(id) };
+        const update = { $set: { status: value } };
+        const result = await Order.updateOne(filter, update);
+        res.json(result);
     } catch (error) {
         res.status(500).json(error.message)
     }

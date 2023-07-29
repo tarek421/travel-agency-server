@@ -45,22 +45,27 @@ exports.createDestination = async (req, res) => {
 
 exports.deleteDestination = async (req, res) => {
     try {
-        const token = req.headers.authorization;
-        const requester = req.decodedEmail;
-        if (requester) {
-            const requesterAccount = await User.findOne({
-                email: requester,
-            });
+        // const token = req.headers.authorization;
+        // const requester = req.decodedEmail;
+        // if (requester) {
+        //     const requesterAccount = await User.findOne({
+        //         email: requester,
+        //     });
 
-            if (requesterAccount.role === 'admin') {
-                const id = req.query.id;
-                const filter = { _id: ObjectId(id) };
-                const result = await Destination.deleteOne(filter);
-                res.json(result);
-            } else {
-                res.status(500).json({ message: "Only Admin can delete file" })
-            }
-        }
+        //     if (requesterAccount.role === 'admin') {
+        //         const id = req.query.id;
+        //         const filter = { _id: ObjectId(id) };
+        //         const result = await Destination.deleteOne(filter);
+        //         res.json(result);
+        //     } else {
+        //         res.status(500).json({ message: "Only Admin can delete file" })
+        //     }
+        // }
+
+        const id = req.query.id;
+        const filter = { _id: ObjectId(id) };
+        const result = await Destination.deleteOne(filter);
+        res.json(result);
     } catch (error) {
         res.status(500).json(error.message)
     }
