@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const Order = require("../model/order.model");
+const User = require("../model/user.model");
 const ObjectId = require('mongodb').ObjectID;
 
 
@@ -50,16 +51,16 @@ exports.orderStatus = async (req, res) => {
     try {
         const requesterEmail = req.decodedEmail;
         if (requesterEmail) {
-            const requesterAccount = await Order.findOne({
+            const requesterAccount = await User.findOne({
                 email: requesterEmail,
             });
-
             if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
                 const { id, value } = req.body;
                 const filter = { _id: ObjectId(id) };
                 const update = { $set: { status: value } };
                 const result = await Order.updateOne(filter, update);
                 res.json(result);
+                console.log(result);
             }
         }
     } catch (error) {
