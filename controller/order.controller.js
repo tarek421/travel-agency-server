@@ -49,7 +49,7 @@ exports.getOrderByEmail = async (req, res) => {
 exports.orderStatus = async (req, res) => {
     try {
         const requesterEmail = req.decodedEmail;
-        if (requester) {
+        if (requesterEmail) {
             const requesterAccount = await Order.findOne({
                 email: requesterEmail,
             });
