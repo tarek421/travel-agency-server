@@ -63,22 +63,20 @@ exports.UpdateUser = async (req, res) => {
 
 exports.DeleteUser = async (req, res) => {
     try {
-        // const token = req.headers.authorization;
-        // const user = req.body;
-        // const requester = req.decodedEmail;
-        // if (requester) {
-        //     const requesterAccount = await User.findOne({
-        //         email: requester,
-        //     });
-        //     if (requesterAccount.role === 'administer') {
-        //         await User.deleteOne({ id: req.params.id });
-        //         res.status(200).json({ message: 'successfully deleted user' });
-        //     } else {
-        //         res.status(500).json({ message: "only administer can delete admin" })
-        //     }
-        // }
-        await User.deleteOne({ id: req.params.id });
-        res.status(200).json({ message: 'successfully deleted user' });
+        const token = req.headers.authorization;
+        const user = req.body;
+        const requester = req.decodedEmail;
+        if (requester) {
+            const requesterAccount = await User.findOne({
+                email: requester,
+            });
+            if (requesterAccount.role === 'administer') {
+                await User.deleteOne({ id: req.params.id });
+                res.status(200).json({ message: 'successfully deleted user' });
+            } else {
+                res.status(500).json({ message: "only administer can delete admin" })
+            }
+        }
     } catch (error) {
         res.status(500).json(error.message)
     }
@@ -103,27 +101,21 @@ exports.createAdmin = async (req, res) => {
 
 exports.updateAdmin = async (req, res) => {
     try {
-        // const token = req.headers.authorization;
-        // const user = req.body;
-        // const requester = req.decodedEmail;
-        // if (requester) {
-        //     const requesterAccount = await User.findOne({
-        //         email: requester,
-        //     });
-        //     if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
-        //         const filter = { email: req.body.email };
-        //         const update = { $set: { role: "admin" } };
-        //         const user = await User.updateOne(filter, update);
-        //         await user.save();
-        //         res.json(result);
-        //     }
-        // }
-
-        const filter = { email: req.body.email };
-        const update = { $set: { role: "admin" } };
-        const user = await User.updateOne(filter, update);
-        await user.save();
-        res.json(result);
+        const token = req.headers.authorization;
+        const user = req.body;
+        const requester = req.decodedEmail;
+        if (requester) {
+            const requesterAccount = await User.findOne({
+                email: requester,
+            });
+            if (requesterAccount.role === 'admin' || requesterAccount.role === 'administer') {
+                const filter = { email: req.body.email };
+                const update = { $set: { role: "admin" } };
+                const user = await User.updateOne(filter, update);
+                await user.save();
+                res.json(result);
+            }
+        }
     } catch (error) {
         res.status(500).json(error.message)
     }
