@@ -18,6 +18,6 @@ const verifyToken = async (req, res, next) => {
 router.get('/', getAllOrder);
 router.get('/:email', getOrderByEmail);
 router.post('/', creatOrder);
-router.put('/status', verifyToken, orderStatus);
+router.patch('/status', verifyToken, orderStatus);
 
 module.exports = router;

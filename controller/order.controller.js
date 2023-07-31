@@ -60,7 +60,6 @@ exports.orderStatus = async (req, res) => {
                 const update = { $set: { status: value } };
                 const result = await Order.updateOne(filter, update);
                 res.json(result);
-                console.log(result);
             }
         }
     } catch (error) {
