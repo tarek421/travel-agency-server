@@ -15,18 +15,6 @@ app.get('/', (req, res) => {
 })
 
 
-//Route not found
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Bad Request' });
-})
-
-
-//Handling server error
-app.use((err, req, res, next) => {
-    res.status(500).json({ message: 'Server error' });
-})
-
-
 // app.use(cors({
 //     origin: [
 //         "https://travel-agency-1.netlify.app/",
@@ -66,6 +54,17 @@ app.use('/rivews', rivewRouter);
 //     res.sendFile(__dirname + '/views/index.html');
 // })
 
+
+//Route not found
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Bad Request' });
+})
+
+
+//Handling server error
+app.use((err, req, res, next) => {
+    res.status(500).json({ message: 'Server error' });
+})
 
 
 var serviceAccount = require("./travel-agency-firebase-adminsdk.json");
