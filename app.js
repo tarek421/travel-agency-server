@@ -37,9 +37,9 @@ const rivewRouter = require('./router/rivew.router');
 
 
 
-app.use('/destinations', cors(), destinationRouter);
-app.use('/users', cors(), userRouter);
-app.use('/orders', cors(), orderRouter);
+app.use('/destinations', destinationRouter);
+app.use('/users', userRouter);
+app.use('/orders', orderRouter);
 app.use('/rivews', rivewRouter);
 
 
