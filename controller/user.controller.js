@@ -76,7 +76,10 @@ exports.DeleteUser = async (req, res) => {
                 await User.deleteOne({ id: req.params.id });
                 res.status(200).json({ message: 'successfully deleted user' });
             } else {
-                res.status(500).json({ message: "only administer can delete admin" })
+                res.status(500).json({
+                    message: "only administer can delete admin",
+                    code: 500
+                })
             }
         }
     } catch (error) {
