@@ -11,12 +11,11 @@ app.use(cors());
 
 // app.use(cors({
 //     origin: [
-//         "http://localhost:3000",
 //         "https://travel-agency-1.netlify.app",
+//         "http://localhost:3000",
 //         "https://travel-agency-client-six.vercel.app"
 //     ],
 //     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
-//     origin: false
 // }));
 
 
