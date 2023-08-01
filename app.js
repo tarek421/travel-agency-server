@@ -7,17 +7,17 @@ var admin = require("firebase-admin");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
-app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        "https://travel-agency-1.netlify.app",
-        "https://travel-agency-client-six.vercel.app"
-    ],
-    methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
-    origin: false
-}));
+// app.use(cors({
+//     origin: [
+//         "http://localhost:3000",
+//         "https://travel-agency-1.netlify.app",
+//         "https://travel-agency-client-six.vercel.app"
+//     ],
+//     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
+//     origin: false
+// }));
 
 
 app.get('/', (req, res) => {

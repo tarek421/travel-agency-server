@@ -42,6 +42,8 @@ exports.CreateUser = async (req, res) => {
 exports.UpdateUser = async (req, res) => {
     try {
         const filter = { email: req.body.email }
+        const isAdministerAccount = await User.findOne(filter);
+        console.log(isAdministerAccount);
         const update = {
             id: uuidv4(),
             name: req.body.name,
