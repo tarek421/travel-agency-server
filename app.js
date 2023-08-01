@@ -8,9 +8,13 @@ var admin = require("firebase-admin");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({
-    origin: ["https://travel-agency-1.netlify.app/", "https://easy-pear-moth-fez.cyclic.app", "http://localhost:3000", "https://travel-agency-client-six.vercel.app/"],
+    origin: [
+        "https://travel-agency-1.netlify.app/",
+        "http://localhost:3000",
+        "https://travel-agency-client-six.vercel.app/"
+    ],
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
-    credentials: false
+    credentials: true
 }));
 
 app.use((req, res, next) => {
