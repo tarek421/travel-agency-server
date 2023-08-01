@@ -8,6 +8,25 @@ var admin = require("firebase-admin");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
+
+
+//Route not found
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Bad Request' });
+})
+
+
+//Handling server error
+app.use((err, req, res, next) => {
+    res.status(500).json({ message: 'Server error' });
+})
+
+
 // app.use(cors({
 //     origin: [
 //         "https://travel-agency-1.netlify.app/",
@@ -35,9 +54,6 @@ const destinationRouter = require('./router/destination.route');
 const orderRouter = require('./router/order.route');
 const rivewRouter = require('./router/rivew.router');
 
-
-
-
 app.use('/destinations', destinationRouter);
 app.use('/users', userRouter);
 app.use('/orders', orderRouter);
@@ -58,21 +74,7 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
 
-
-//Route not found
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Bad Request' });
-})
-
-
-//Handling server error
-app.use((err, req, res, next) => {
-    res.status(500).json({ message: 'Server error' });
-})
 
 
 module.exports = app;
