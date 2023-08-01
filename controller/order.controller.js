@@ -41,7 +41,7 @@ exports.getAllOrder = async (req, res) => {
 exports.getOrderByEmail = async (req, res) => {
     try {
         const result = await Order.find({ email: req.params.email });
-        res.json(result);
+        res.status(500).json(result);
     } catch (error) {
         res.status(500).json(error.message)
     }
